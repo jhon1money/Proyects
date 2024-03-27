@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO DO LIST</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>TO-DO LIST</h1>
+        <form action="{{ url_for('agregar') }}" method="post">
+            <input required name="todo" placeholder="ADD A NEW TASK">
+            <button type="submit">ADD</button>
+        </form>
+        <div class="checkbox-animate">
+            <ul>
+                {% for todo in todos %}
+                    {% if todo.user_id == session.get('user_id') %}
+                        <li>
+                            <input type="checkbox" name="done" {% if todo.done %} checked {% endif %} disabled>
+                            <span class="input-check {% if todo.done %}completed{% endif %}">{{ todo.task }}</span>
+                            <div class="actions">
+                                <a href="{{ url_for('check', id=todo.id) }}" class="check-btn">Check</a>
+                                <a href="{{ url_for('editar', id=todo.id) }}" class="check-btn">Edit</a>
+                                <a href="{{ url_for('eliminar', id=todo.id) }}" class="check-btn">Delete</a>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <form id="logout-form" action="{{ url_for('logout') }}" method="post">
+            <button type="submit">Sign Out</button>
+        </form>
+    </div>
+    <script>
+        // Agrega un listener de eventos al formulario de logout para enviar una solicitud de cierre de sesión
+        document.getElementById('logout-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+            this.submit(); // Enviar el formulario de cierre de sesión
+        });
+    </script>
+</body>
+</html>
